@@ -7,6 +7,7 @@ import 'package:hr_tool/riverpod/user_details/provider/user_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
+  
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
