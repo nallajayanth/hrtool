@@ -7,8 +7,12 @@
 // import 'package:hr_tool/screens/home%20screen/manager_home_screen.dart';
 // import 'package:hr_tool/screens/leaves/employee_leave_screen.dart';
 // import 'package:hr_tool/screens/leaves/leave_requests_screen.dart';
-
+// import 'package:hr_tool/screens/profiles/profile_screen.dart';
 // import 'package:hr_tool/screens/splash_screen.dart';
+// import 'package:hr_tool/screens/task%20screen/employee_task_screen.dart';
+// import 'package:hr_tool/screens/task%20screen/manager_add_task_screen.dart';
+// import 'package:hr_tool/screens/teams/employees_team_members_screen.dart';
+// import 'manager_main_scaffold.dart';
 
 // final appRouter = GoRouter(
 //   initialLocation: "/",
@@ -16,35 +20,73 @@
 //     GoRoute(path: "/", builder: (context, state) => SplashScreen()),
 //     GoRoute(path: "/login", builder: (context, state) => LoginScreen()),
 //     GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
+
+//     // Employee Routes (without bottom navigation)
 //     GoRoute(
 //       path: "/employee-home",
 //       builder: (context, state) {
 //         final userId = state.extra as String;
-
 //         return EmployeeHomeScreen(userId: userId);
 //       },
 //     ),
-//     GoRoute(
-//       path: "/empolyee-attendance",
-//       builder: (context, state) => EmployeeAttendanceScreen(),
-//     ),
+// GoRoute(
+//   path: "/empolyee-attendance",
+//   builder: (context, state) => EmployeeAttendanceScreen(),
+// ),
 //     GoRoute(
 //       path: "/employee-leave",
 //       builder: (context, state) => EmployeeLeaveScreen(),
 //     ),
 //     GoRoute(
-//       path: "/manager-home",
-//       builder: (context, state) => ManagerHomeScreen(),
+//       path: "/employees-team-members",
+//       builder: (context, state) => EmployeesTeamMembersScreen(),
 //     ),
-// GoRoute(
-//   path: "/add-empolyees",
-//   builder: (context, state) => AddEmployeesScreen(),
-// ),
 //     GoRoute(
-//       path: "/leave-request",
-//       builder: (context, state) => LeaveRequestsScreen(),
+//       path: "/employee-task",
+//       builder: (context, state) => EmployeeTasksScreen(),
 //     ),
 
+//     // Standalone routes
+//     GoRoute(
+//       path: "/manager-add-task",
+//       builder: (context, state) => ManagerAddTaskScreen(),
+//     ),
+//     GoRoute(
+//       path: "/add-employees",
+//       builder: (context, state) => AddEmployeesScreen(),
+//     ),
+
+//     // Universal Profile Route (works for both employee and manager)
+//     GoRoute(
+//       path: "/profile",
+//       builder: (context, state) => const ProfileScreen(),
+//     ),
+
+//     // ShellRoute for Manager Navigation with Bottom Navigation
+//     ShellRoute(
+//       builder: (context, state, child) {
+//         return ManagerMainScaffold(child: child);
+//       },
+//       routes: [
+//         GoRoute(
+//           path: "/manager-home",
+//           builder: (context, state) => ManagerHomeScreen(),
+//         ),
+//         GoRoute(
+//           path: "/team",
+//           builder: (context, state) => AddEmployeesScreen(),
+//         ),
+//         GoRoute(
+//           path: "/leave-request",
+//           builder: (context, state) => LeaveRequestsScreen(),
+//         ),
+//         // Manager Profile accessed via bottom navigation
+//         GoRoute(
+//           path: "/manager-profile",
+//           builder: (context, state) => const ProfileScreen(),
+//         ),
+//       ],
+//     ),
 //   ],
 // );
 
@@ -57,58 +99,80 @@ import 'package:hr_tool/screens/home%20screen/employee_home_screen.dart';
 import 'package:hr_tool/screens/home%20screen/manager_home_screen.dart';
 import 'package:hr_tool/screens/leaves/employee_leave_screen.dart';
 import 'package:hr_tool/screens/leaves/leave_requests_screen.dart';
-import 'package:hr_tool/screens/profiles/manager_profile_screen.dart';
+import 'package:hr_tool/screens/profiles/profile_screen.dart';
 import 'package:hr_tool/screens/splash_screen.dart';
 import 'package:hr_tool/screens/task%20screen/employee_task_screen.dart';
 import 'package:hr_tool/screens/task%20screen/manager_add_task_screen.dart';
 import 'package:hr_tool/screens/teams/employees_team_members_screen.dart';
-import 'package:hr_tool/screens/teams/team_members_screen.dart'
-    hide LeaveRequestsScreen;
 
-import 'manager_main_scaffold.dart'; // This will hold bottom nav
+import 'manager_main_scaffold.dart';
+import 'employee_main_scaffold.dart';
 
 final appRouter = GoRouter(
   initialLocation: "/",
   routes: [
+    // --- Auth & Splash ---
     GoRoute(path: "/", builder: (context, state) => SplashScreen()),
     GoRoute(path: "/login", builder: (context, state) => LoginScreen()),
     GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
-    GoRoute(
-      path: "/add-empolyees",
-      builder: (context, state) => AddEmployeesScreen(),
-    ),
-    GoRoute(
-      path: "/employee-home",
-      builder: (context, state) {
-        final userId = state.extra as String;
-        return EmployeeHomeScreen(userId: userId);
-      },
-    ),
+
+    // --- Standalone routes (no bottom nav) ---
     GoRoute(
       path: "/empolyee-attendance",
       builder: (context, state) => EmployeeAttendanceScreen(),
-    ),
-    GoRoute(
-      path: "/employee-leave",
-      builder: (context, state) => EmployeeLeaveScreen(),
-    ),
-    GoRoute(
-      path: "/employees-team-members",
-      builder: (context, state) => EmployeesTeamMembersScreen(),
     ),
     GoRoute(
       path: "/manager-add-task",
       builder: (context, state) => ManagerAddTaskScreen(),
     ),
     GoRoute(
-      path: "/employee-task",
-      builder: (context, state) => EmployeeTasksScreen(),
+      path: "/add-employees",
+      builder: (context, state) => AddEmployeesScreen(),
+    ),
+    GoRoute(
+      path: "/profile",
+      builder: (context, state) => const ProfileScreen(),
     ),
 
-    // ShellRoute for Manager Navigation
+    // --- Employee ShellRoute ---
     ShellRoute(
       builder: (context, state, child) {
-        return ManagerMainScaffold(child: child); // This contains bottom nav
+        return EmployeeMainScaffold(child: child);
+      },
+      routes: [
+        GoRoute(
+          path: "/employee-home",
+          builder: (context, state) {
+            return EmployeeHomeScreen();
+          },
+        ),
+        GoRoute(
+          path: "/employee-attendance",
+          builder: (context, state) => EmployeeAttendanceScreen(),
+        ),
+        GoRoute(
+          path: "/employee-leave",
+          builder: (context, state) => EmployeeLeaveScreen(),
+        ),
+        GoRoute(
+          path: "/employees-team-members",
+          builder: (context, state) => EmployeesTeamMembersScreen(),
+        ),
+        GoRoute(
+          path: "/employee-task",
+          builder: (context, state) => EmployeeTasksScreen(),
+        ),
+        GoRoute(
+          path: "/employee-profile",
+          builder: (context, state) => const ProfileScreen(),
+        ),
+      ],
+    ),
+
+    // --- Manager ShellRoute ---
+    ShellRoute(
+      builder: (context, state, child) {
+        return ManagerMainScaffold(child: child);
       },
       routes: [
         GoRoute(
@@ -117,22 +181,17 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: "/team",
-          builder: (context, state) => AddEmployeesScreen(), // Placeholder
+          builder: (context, state) => AddEmployeesScreen(),
         ),
         GoRoute(
           path: "/leave-request",
           builder: (context, state) => LeaveRequestsScreen(),
         ),
         GoRoute(
-          path: "/profile",
-          builder: (context, state) => ManagerProfileScreen(), // Placeholder
+          path: "/manager-profile",
+          builder: (context, state) => const ProfileScreen(),
         ),
       ],
-    ),
-
-    GoRoute(
-      path: "/add-empolyees",
-      builder: (context, state) => AddEmployeesScreen(),
     ),
   ],
 );

@@ -7,7 +7,6 @@ import 'package:hr_tool/riverpod/user_details/provider/user_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
-  
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -127,7 +126,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       if (user.role.toLowerCase() == 'manager') {
         context.go("/manager-home");
       } else {
-        context.go("/employee-home", extra: response.user!.id);
+        context.go("/employee-home");
       }
     } catch (e) {
       setState(() {

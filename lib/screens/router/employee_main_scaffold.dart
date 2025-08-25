@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ManagerMainScaffold extends StatefulWidget {
+class EmployeeMainScaffold extends StatefulWidget {
   final Widget child;
-  const ManagerMainScaffold({super.key, required this.child});
+  const EmployeeMainScaffold({super.key, required this.child});
 
   @override
-  State<ManagerMainScaffold> createState() => _ManagerMainScaffoldState();
+  State<EmployeeMainScaffold> createState() => _EmployeeMainScaffoldState();
 }
 
-class _ManagerMainScaffoldState extends State<ManagerMainScaffold> {
-  final tabs = ['/manager-home', '/team', '/leave-request', '/manager-profile'];
+class _EmployeeMainScaffoldState extends State<EmployeeMainScaffold> {
+  // Tabs for employee bottom nav
+  final tabs = [
+    '/employee-home',
+    '/employee-attendance',
+    '/employee-task',
+    '/employees-team-members',
+    '/employee-profile',
+  ];
 
   int get _currentIndex {
     final location = GoRouterState.of(context).uri.path;
@@ -49,7 +56,7 @@ class _ManagerMainScaffoldState extends State<ManagerMainScaffold> {
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
-            selectedItemColor: Colors.blueAccent,
+            selectedItemColor: Colors.indigo,
             unselectedItemColor: Colors.grey,
             currentIndex: _currentIndex,
             onTap: _onTap,
@@ -59,12 +66,16 @@ class _ManagerMainScaffoldState extends State<ManagerMainScaffold> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.group_rounded),
-                label: 'Team',
+                icon: Icon(Icons.event_available_rounded),
+                label: 'Attendance',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month_rounded),
-                label: 'Leave',
+                icon: Icon(Icons.task_rounded),
+                label: 'Tasks',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.group_rounded),
+                label: 'Team',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person_rounded),
