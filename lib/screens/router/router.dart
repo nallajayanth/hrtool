@@ -100,6 +100,7 @@ import 'package:hr_tool/screens/home%20screen/employee_home_screen.dart';
 import 'package:hr_tool/screens/home%20screen/manager_home_screen.dart';
 import 'package:hr_tool/screens/leaves/employee_leave_screen.dart';
 import 'package:hr_tool/screens/leaves/leave_requests_screen.dart';
+import 'package:hr_tool/screens/performance%20screens/manager_add_performance_screen.dart';
 import 'package:hr_tool/screens/profiles/profile_screen.dart';
 import 'package:hr_tool/screens/splash_screen.dart';
 import 'package:hr_tool/screens/task%20screen/employee_task_screen.dart';
@@ -118,6 +119,10 @@ final appRouter = GoRouter(
     GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
 
     // --- Standalone routes (no bottom nav) ---
+    GoRoute(
+      path: "/manager-add-performance",
+      builder: (context, state) => ManagerAddPerformanceScreen(),
+    ),
     GoRoute(
       path: "/manager-attendance",
       builder: (context, state) => ManagerAttendanceOverview(),
