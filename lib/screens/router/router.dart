@@ -93,6 +93,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:hr_tool/screens/add%20employees/add_employees_screen.dart';
 import 'package:hr_tool/screens/attendence/employee_attendence.dart';
+import 'package:hr_tool/screens/attendence/manager_attendance_overview.dart';
 import 'package:hr_tool/screens/auth/login_screen.dart';
 import 'package:hr_tool/screens/auth/register_screen.dart';
 import 'package:hr_tool/screens/home%20screen/employee_home_screen.dart';
@@ -117,6 +118,10 @@ final appRouter = GoRouter(
     GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
 
     // --- Standalone routes (no bottom nav) ---
+    GoRoute(
+      path: "/manager-attendance",
+      builder: (context, state) => ManagerAttendanceOverview(),
+    ),
     GoRoute(
       path: "/empolyee-attendance",
       builder: (context, state) => EmployeeAttendanceScreen(),

@@ -8,8 +8,6 @@ import 'package:hr_tool/riverpod/user_details/provider/user_provider.dart';
 class EmployeeHomeScreen extends ConsumerStatefulWidget {
   const EmployeeHomeScreen({super.key});
 
-  // final String userId;
-
   @override
   ConsumerState<EmployeeHomeScreen> createState() => _EmployeeHomeScreenState();
 }
@@ -19,6 +17,7 @@ class _EmployeeHomeScreenState extends ConsumerState<EmployeeHomeScreen> {
   bool isCheckedOut = false;
   String? checkInTime;
   String? checkOutTime;
+  String? name;
 
   @override
   void initState() {
@@ -73,6 +72,7 @@ class _EmployeeHomeScreenState extends ConsumerState<EmployeeHomeScreen> {
         'date': formattedDate,
         'status': 'Present',
         'check_in': now.toIso8601String(),
+        'name': name,
       });
 
       setState(() {
@@ -164,6 +164,7 @@ class _EmployeeHomeScreenState extends ConsumerState<EmployeeHomeScreen> {
         title: userAsyncValue.when(
           data: (users) {
             final user = users.isNotEmpty ? users[0] : null;
+            name = user?.name;
             return Row(
               children: [
                 InkWell(
