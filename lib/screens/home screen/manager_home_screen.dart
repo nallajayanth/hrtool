@@ -122,7 +122,7 @@ class _ManagerHomeScreenState extends ConsumerState<ManagerHomeScreen> {
         "icon": Icons.trending_up,
         "color": Colors.green,
       },
-      {"title": "Reports", "icon": Icons.bar_chart, "color": Colors.purple},
+      {"title": "Attendance", "icon": Icons.bar_chart, "color": Colors.purple},
     ];
 
     return GridView.builder(
@@ -144,6 +144,13 @@ class _ManagerHomeScreenState extends ConsumerState<ManagerHomeScreen> {
             } else if (index == 0) {
               context.push("/manager-add-task");
             }
+             else if (index == 2) {
+              context.push("/manager-add-performance");
+            }
+            else if (index == 3) {
+              context.push("/manager-attendance");
+            }
+
           },
           child: Container(
             decoration: BoxDecoration(
