@@ -1,9 +1,13 @@
 // manager_add_task_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hr_tool/screens/task%20screen/view_assigned_tasks_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hr_tool/riverpod/employee%20list%20provider/employee_list_provider.dart';
+// Import your view assigned tasks screen
+// import 'package:hr_tool/screens/view_assigned_tasks_screen.dart';
 
 class ManagerAddTaskScreen extends ConsumerStatefulWidget {
   const ManagerAddTaskScreen({super.key});
@@ -22,9 +26,13 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
 
   // Helper to refresh provider
   Future<void> _refreshEmployees() async {
-    // Re-fetch the employee provider; adjust the provider name if different
     ref.refresh(employeeListProvider);
     await Future.delayed(const Duration(milliseconds: 300));
+  }
+
+  // Navigate to view assigned tasks screen
+  void _navigateToViewTasks() {
+    context.push('/view-assigned-tasks');
   }
 
   // Open assign task bottom sheet for a specific employee
@@ -36,7 +44,6 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
       builder: (_) => _AssignTaskSheet(
         employee: employee,
         onAssigned: () {
-          // refresh on success
           _refreshEmployees();
         },
       ),
@@ -44,25 +51,133 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
   }
 
   Widget _buildTopBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.teal.shade600, Colors.teal.shade800],
+        ),
+      ),
+      child: Column(
         children: [
-          const Expanded(
-            child: Text(
-              'Assign Tasks',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.add_task,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Assign Tasks',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Select employees to assign new tasks',
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: IconButton(
+                      tooltip: 'Toggle layout',
+                      onPressed: () => setState(() => _isGrid = !_isGrid),
+                      icon: Icon(
+                        _isGrid ? Icons.view_list : Icons.grid_view,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: IconButton(
+                      tooltip: 'Refresh',
+                      onPressed: _refreshEmployees,
+                      icon: const Icon(Icons.refresh, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // View Assigned Tasks Button
+          Container(
+            width: double.infinity,
+            height: 48,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.15),
+                  Colors.white.withOpacity(0.05),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 1,
+              ),
             ),
-          ),
-          IconButton(
-            tooltip: 'Toggle layout',
-            onPressed: () => setState(() => _isGrid = !_isGrid),
-            icon: Icon(_isGrid ? Icons.view_list : Icons.grid_view),
-          ),
-          IconButton(
-            tooltip: 'Refresh',
-            onPressed: _refreshEmployees,
-            icon: const Icon(Icons.refresh),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: _navigateToViewTasks,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.visibility, color: Colors.white, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'View Assigned Tasks',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -71,19 +186,33 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
 
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Search employees...',
-          prefixIcon: const Icon(Icons.search),
-          filled: true,
-          fillColor: Colors.grey[100],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        onChanged: (s) => setState(() => _searchQuery = s.trim().toLowerCase()),
+        child: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search employees...',
+            hintStyle: TextStyle(color: Colors.grey.shade500),
+            prefixIcon: Icon(Icons.search, color: Colors.teal.shade600),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
+          onChanged: (s) =>
+              setState(() => _searchQuery = s.trim().toLowerCase()),
+        ),
       ),
     );
   }
@@ -93,100 +222,170 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
     final role = (emp['role'] ?? 'Employee') as String;
     final dept = (emp['department'] ?? '') as String;
     final mobile = (emp['mobile']?.toString() ?? '');
-    final id = emp['id'] as String?;
     final avatarLetter = name.isNotEmpty ? name[0].toUpperCase() : '?';
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final hasBoundedHeight = constraints.hasBoundedHeight;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => _openAssignTaskSheet(emp),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final hasBoundedHeight = constraints.hasBoundedHeight;
 
-        final info = Row(
-          children: [
-            CircleAvatar(
-              radius: 28,
-              backgroundColor: Colors.blue.shade50,
-              child: Text(
-                avatarLetter,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade700,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$role • $dept',
-                    style: TextStyle(fontSize: 13, color: Colors.grey[700]),
-                  ),
-                  if (mobile.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text(
-                        '📱 $mobile',
-                        style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                final info = Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.teal.shade400, Colors.teal.shade600],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          avatarLetter,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal.shade700,
+                          ),
+                        ),
                       ),
                     ),
-                ],
-              ),
-            ),
-          ],
-        );
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.teal.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '$role • $dept',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.teal.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          if (mobile.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.phone_android,
+                                    size: 14,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    mobile,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
 
-        final buttonRow = Row(
-          children: [
-            Expanded(
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.add_task),
-                label: const Text('Assign Task'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                final buttonRow = Container(
+                  width: double.infinity,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.teal.shade500, Colors.teal.shade700],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.teal.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                ),
-                onPressed: () => _openAssignTaskSheet(emp),
-              ),
-            ),
-          ],
-        );
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => _openAssignTaskSheet(emp),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_task, color: Colors.white, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Assign Task',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
 
-        return Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisSize: hasBoundedHeight
-                  ? MainAxisSize.max
-                  : MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                info,
-                if (hasBoundedHeight) const Spacer(),
-                const SizedBox(height: 12),
-                buttonRow,
-                if (!hasBoundedHeight) ...[], // No extra for min
-              ],
+                return Column(
+                  mainAxisSize: hasBoundedHeight
+                      ? MainAxisSize.max
+                      : MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    info,
+                    if (hasBoundedHeight) const Spacer(),
+                    const SizedBox(height: 12),
+                    buttonRow,
+                  ],
+                );
+              },
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -195,24 +394,54 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
     final employeesAsync = ref.watch(employeeListProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('Team Tasks'),
+        title: const Text(
+          'Team Management',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
         elevation: 0,
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.teal.shade700,
+        foregroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Column(
           children: [
             _buildTopBar(),
             _buildSearchField(),
-            const SizedBox(height: 12),
             Expanded(
               child: employeesAsync.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (err, _) => Center(child: Text('Error: $err')),
+                error: (err, _) => Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.red.shade300,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Error loading employees',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ElevatedButton.icon(
+                        onPressed: _refreshEmployees,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Try Again'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 data: (employees) {
-                  // employees is expected to be List<Map>
                   final list = (employees as List)
                       .cast<Map<String, dynamic>>()
                       .where((e) {
@@ -235,21 +464,48 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.people_alt_outlined,
-                            size: 64,
-                            color: Colors.grey[300],
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.people_alt_outlined,
+                              size: 48,
+                              color: Colors.grey.shade400,
+                            ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 16),
                           const Text(
                             'No employees found',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey,
+                            ),
                           ),
-                          const SizedBox(height: 6),
-                          TextButton.icon(
+                          const SizedBox(height: 8),
+                          Text(
+                            _searchQuery.isEmpty
+                                ? 'No employees available to assign tasks'
+                                : 'Try adjusting your search',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade500,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
                             onPressed: _refreshEmployees,
                             icon: const Icon(Icons.refresh),
                             label: const Text('Refresh'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -262,15 +518,15 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
                       onRefresh: _refreshEmployees,
                       child: GridView.builder(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
+                          horizontal: 12,
                           vertical: 8,
                         ),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              mainAxisSpacing: 8,
-                              crossAxisSpacing: 8,
-                              childAspectRatio: 0.72,
+                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 12,
+                              childAspectRatio: 0.75,
                             ),
                         itemCount: list.length,
                         itemBuilder: (_, i) => _employeeCard(list[i]),
@@ -281,15 +537,12 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
                       onRefresh: _refreshEmployees,
                       child: ListView.separated(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 6,
+                          horizontal: 12,
+                          vertical: 8,
                         ),
                         itemCount: list.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 6),
-                        itemBuilder: (_, i) {
-                          final emp = list[i];
-                          return _employeeCard(emp);
-                        },
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (_, i) => _employeeCard(list[i]),
                       ),
                     );
                   }
@@ -304,7 +557,6 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
 }
 
 /// Bottom sheet widget for creating a task for a given employee.
-/// This is kept as a separate StatefulWidget so it can manage its own form/loading state.
 class _AssignTaskSheet extends StatefulWidget {
   final Map<String, dynamic> employee;
   final VoidCallback? onAssigned;
@@ -338,7 +590,18 @@ class _AssignTaskSheetState extends State<_AssignTaskSheet> {
   Future<void> _submitTask() async {
     if (!_formKey.currentState!.validate() || _dueDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please complete all fields')),
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.warning, color: Colors.white),
+              SizedBox(width: 8),
+              Text('Please complete all fields'),
+            ],
+          ),
+          backgroundColor: Colors.orange.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
       );
       return;
     }
@@ -346,7 +609,6 @@ class _AssignTaskSheetState extends State<_AssignTaskSheet> {
     setState(() => _loading = true);
 
     try {
-      // manager info
       final manager = supabase.auth.currentUser;
       if (manager == null) throw 'Manager not authenticated';
 
@@ -358,7 +620,6 @@ class _AssignTaskSheetState extends State<_AssignTaskSheet> {
 
       final managerName = managerProfile?['name'] ?? '';
 
-      // Prepare payload
       final payload = {
         'title': _titleCtrl.text.trim(),
         'description': _descCtrl.text.trim(),
@@ -376,15 +637,38 @@ class _AssignTaskSheetState extends State<_AssignTaskSheet> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Task assigned successfully')),
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.white),
+              SizedBox(width: 8),
+              Text('Task assigned successfully!'),
+            ],
+          ),
+          backgroundColor: Colors.green.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
       );
 
       widget.onAssigned?.call();
       Navigator.of(context).pop();
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to assign task: $e')));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error, color: Colors.white),
+              const SizedBox(width: 8),
+              Expanded(child: Text('Failed to assign task: $e')),
+            ],
+          ),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -402,6 +686,7 @@ class _AssignTaskSheetState extends State<_AssignTaskSheet> {
     final emp = widget.employee;
     final name = emp['name'] ?? 'Unknown';
     final dept = emp['department'] ?? '';
+    final role = emp['role'] ?? 'Employee';
 
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -412,32 +697,49 @@ class _AssignTaskSheetState extends State<_AssignTaskSheet> {
         return Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 6,
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(6),
+          child: Column(
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.teal.shade50, Colors.teal.shade100],
                   ),
                 ),
-                Row(
+                child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 26,
-                      backgroundColor: Colors.teal.shade50,
-                      child: Text(
-                        (name.isNotEmpty ? name[0].toUpperCase() : '?'),
-                        style: TextStyle(
-                          color: Colors.teal.shade700,
-                          fontWeight: FontWeight.bold,
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.teal.shade400, Colors.teal.shade600],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          (name.isNotEmpty ? name[0].toUpperCase() : '?'),
+                          style: TextStyle(
+                            color: Colors.teal.shade700,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
@@ -454,89 +756,220 @@ class _AssignTaskSheetState extends State<_AssignTaskSheet> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(dept, style: TextStyle(color: Colors.grey[700])),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.teal.shade200,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '$role • $dept',
+                              style: TextStyle(
+                                color: Colors.teal.shade800,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    Text(
-                      'Assign Task',
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontWeight: FontWeight.w600,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.teal.shade600,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'Assign Task',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _titleCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'Task Title',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? 'Required' : null,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _descCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'Description',
-                          border: OutlineInputBorder(),
-                        ),
-                        minLines: 3,
-                        maxLines: 5,
-                        validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? 'Required' : null,
-                      ),
-                      const SizedBox(height: 12),
-                      ListTile(
-                        onTap: _pickDueDate,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(color: Colors.grey.shade200),
-                        ),
-                        title: Text(
-                          _dueDate == null
-                              ? 'Select due date'
-                              : 'Due ${DateFormat.yMMMd().format(_dueDate!)}',
-                        ),
-                        trailing: const Icon(Icons.calendar_today),
-                      ),
-                      const SizedBox(height: 18),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.all(20),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Task Details',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                          icon: _loading
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _titleCtrl,
+                          decoration: InputDecoration(
+                            labelText: 'Task Title',
+                            hintText: 'Enter a clear task title...',
+                            prefixIcon: Icon(
+                              Icons.title,
+                              color: Colors.teal.shade600,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.teal.shade600,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Title is required'
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _descCtrl,
+                          decoration: InputDecoration(
+                            labelText: 'Description',
+                            hintText: 'Describe the task in detail...',
+                            prefixIcon: Icon(
+                              Icons.description,
+                              color: Colors.teal.shade600,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                color: Colors.teal.shade600,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                          minLines: 3,
+                          maxLines: 5,
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Description is required'
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            onTap: _pickDueDate,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            leading: Icon(
+                              Icons.calendar_today,
+                              color: Colors.teal.shade600,
+                            ),
+                            title: Text(
+                              _dueDate == null
+                                  ? 'Select due date'
+                                  : 'Due ${DateFormat.yMMMd().format(_dueDate!)}',
+                              style: TextStyle(
+                                color: _dueDate == null
+                                    ? Colors.grey.shade600
+                                    : Colors.black87,
+                                fontWeight: _dueDate == null
+                                    ? FontWeight.normal
+                                    : FontWeight.w600,
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Container(
+                          width: double.infinity,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: _loading
+                                  ? [Colors.grey.shade400, Colors.grey.shade500]
+                                  : [
+                                      Colors.teal.shade500,
+                                      Colors.teal.shade700,
+                                    ],
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: (_loading ? Colors.grey : Colors.teal)
+                                    .withOpacity(0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(16),
+                              onTap: _loading ? null : _submitTask,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (_loading)
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  else
+                                    const Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _loading
+                                        ? 'Assigning Task...'
+                                        : 'Assign Task',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                )
-                              : const Icon(Icons.send),
-                          label: Text(
-                            _loading ? 'Assigning...' : 'Assign Task',
+                                ],
+                              ),
+                            ),
                           ),
-                          onPressed: _loading ? null : _submitTask,
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

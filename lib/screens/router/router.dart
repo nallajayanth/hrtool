@@ -1,95 +1,3 @@
-// import 'package:go_router/go_router.dart';
-// import 'package:hr_tool/screens/add%20employees/add_employees_screen.dart';
-// import 'package:hr_tool/screens/attendence/employee_attendence.dart';
-// import 'package:hr_tool/screens/auth/login_screen.dart';
-// import 'package:hr_tool/screens/auth/register_screen.dart';
-// import 'package:hr_tool/screens/home%20screen/employee_home_screen.dart';
-// import 'package:hr_tool/screens/home%20screen/manager_home_screen.dart';
-// import 'package:hr_tool/screens/leaves/employee_leave_screen.dart';
-// import 'package:hr_tool/screens/leaves/leave_requests_screen.dart';
-// import 'package:hr_tool/screens/profiles/profile_screen.dart';
-// import 'package:hr_tool/screens/splash_screen.dart';
-// import 'package:hr_tool/screens/task%20screen/employee_task_screen.dart';
-// import 'package:hr_tool/screens/task%20screen/manager_add_task_screen.dart';
-// import 'package:hr_tool/screens/teams/employees_team_members_screen.dart';
-// import 'manager_main_scaffold.dart';
-
-// final appRouter = GoRouter(
-//   initialLocation: "/",
-//   routes: [
-//     GoRoute(path: "/", builder: (context, state) => SplashScreen()),
-//     GoRoute(path: "/login", builder: (context, state) => LoginScreen()),
-//     GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
-
-//     // Employee Routes (without bottom navigation)
-//     GoRoute(
-//       path: "/employee-home",
-//       builder: (context, state) {
-//         final userId = state.extra as String;
-//         return EmployeeHomeScreen(userId: userId);
-//       },
-//     ),
-// GoRoute(
-//   path: "/empolyee-attendance",
-//   builder: (context, state) => EmployeeAttendanceScreen(),
-// ),
-//     GoRoute(
-//       path: "/employee-leave",
-//       builder: (context, state) => EmployeeLeaveScreen(),
-//     ),
-//     GoRoute(
-//       path: "/employees-team-members",
-//       builder: (context, state) => EmployeesTeamMembersScreen(),
-//     ),
-//     GoRoute(
-//       path: "/employee-task",
-//       builder: (context, state) => EmployeeTasksScreen(),
-//     ),
-
-//     // Standalone routes
-//     GoRoute(
-//       path: "/manager-add-task",
-//       builder: (context, state) => ManagerAddTaskScreen(),
-//     ),
-//     GoRoute(
-//       path: "/add-employees",
-//       builder: (context, state) => AddEmployeesScreen(),
-//     ),
-
-//     // Universal Profile Route (works for both employee and manager)
-//     GoRoute(
-//       path: "/profile",
-//       builder: (context, state) => const ProfileScreen(),
-//     ),
-
-//     // ShellRoute for Manager Navigation with Bottom Navigation
-//     ShellRoute(
-//       builder: (context, state, child) {
-//         return ManagerMainScaffold(child: child);
-//       },
-//       routes: [
-//         GoRoute(
-//           path: "/manager-home",
-//           builder: (context, state) => ManagerHomeScreen(),
-//         ),
-//         GoRoute(
-//           path: "/team",
-//           builder: (context, state) => AddEmployeesScreen(),
-//         ),
-//         GoRoute(
-//           path: "/leave-request",
-//           builder: (context, state) => LeaveRequestsScreen(),
-//         ),
-//         // Manager Profile accessed via bottom navigation
-//         GoRoute(
-//           path: "/manager-profile",
-//           builder: (context, state) => const ProfileScreen(),
-//         ),
-//       ],
-//     ),
-//   ],
-// );
-
 import 'package:go_router/go_router.dart';
 import 'package:hr_tool/screens/add%20employees/add_employees_screen.dart';
 import 'package:hr_tool/screens/attendence/employee_attendence.dart';
@@ -100,11 +8,13 @@ import 'package:hr_tool/screens/home%20screen/employee_home_screen.dart';
 import 'package:hr_tool/screens/home%20screen/manager_home_screen.dart';
 import 'package:hr_tool/screens/leaves/employee_leave_screen.dart';
 import 'package:hr_tool/screens/leaves/leave_requests_screen.dart';
+import 'package:hr_tool/screens/performance%20screens/employee_performance_screen.dart';
 import 'package:hr_tool/screens/performance%20screens/manager_add_performance_screen.dart';
 import 'package:hr_tool/screens/profiles/profile_screen.dart';
 import 'package:hr_tool/screens/splash_screen.dart';
 import 'package:hr_tool/screens/task%20screen/employee_task_screen.dart';
 import 'package:hr_tool/screens/task%20screen/manager_add_task_screen.dart';
+import 'package:hr_tool/screens/task%20screen/view_assigned_tasks_screen.dart';
 import 'package:hr_tool/screens/teams/employees_team_members_screen.dart';
 
 import 'manager_main_scaffold.dart';
@@ -119,6 +29,14 @@ final appRouter = GoRouter(
     GoRoute(path: "/register", builder: (context, state) => RegisterScreen()),
 
     // --- Standalone routes (no bottom nav) ---
+    GoRoute(
+      path: "/employee-performance-screen",
+      builder: (context, state) => EmployeePerformanceScreen(),
+    ),
+    GoRoute(
+      path: '/view-assigned-tasks',
+      builder: (context, state) => ViewAssignedTasksScreen(),
+    ),
     GoRoute(
       path: "/manager-add-performance",
       builder: (context, state) => ManagerAddPerformanceScreen(),
