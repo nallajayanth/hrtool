@@ -326,7 +326,8 @@ class _EmployeeHomeScreenState extends ConsumerState<EmployeeHomeScreen> {
                 Expanded(
                   child: _buildStatCard(
                     icon: Icons.calendar_today,
-                    title: "Work Days",
+                    title: "Performance",
+                    onTap: () => context.push("/employee-performance-screen"),
 
                     color: Colors.purple,
                   ),
