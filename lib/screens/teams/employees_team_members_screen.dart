@@ -3,7 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:async';
 
 class EmployeesTeamMembersScreen extends StatefulWidget {
-  const EmployeesTeamMembersScreen({Key? key}) : super(key: key);
+  const EmployeesTeamMembersScreen({super.key});
 
   @override
   State<EmployeesTeamMembersScreen> createState() =>

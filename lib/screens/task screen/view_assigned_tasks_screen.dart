@@ -455,7 +455,7 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
             ),
             const SizedBox(height: 16),
             Text(
-              filter == 'all' ? 'No tasks assigned yet' : 'No ${filter} tasks',
+              filter == 'all' ? 'No tasks assigned yet' : 'No $filter tasks',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EmployeeLeaveScreen extends StatefulWidget {
-  const EmployeeLeaveScreen({Key? key}) : super(key: key);
+  const EmployeeLeaveScreen({super.key});
 
   @override
   State<EmployeeLeaveScreen> createState() => _EmployeeLeaveScreenState();
@@ -301,7 +301,7 @@ class _EmployeeLeaveScreenState extends State<EmployeeLeaveScreen> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
           ],
         ),
       ),

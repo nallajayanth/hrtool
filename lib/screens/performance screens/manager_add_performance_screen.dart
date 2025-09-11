@@ -626,10 +626,12 @@ class _ManagerAddPerformanceScreenState
                             maxLines: 5,
                             maxLength: 1000,
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty)
+                              if (value == null || value.trim().isEmpty) {
                                 return 'Feedback is required';
-                              if (value.length < 10)
+                              }
+                              if (value.length < 10) {
                                 return 'Feedback must be at least 10 characters';
+                              }
                               return null;
                             },
                           ),
@@ -705,10 +707,12 @@ class _ManagerAddPerformanceScreenState
                             maxLines: 5,
                             maxLength: 1000,
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty)
+                              if (value == null || value.trim().isEmpty) {
                                 return 'Achievements are required';
-                              if (value.length < 10)
+                              }
+                              if (value.length < 10) {
                                 return 'Achievements must be at least 10 characters';
+                              }
                               return null;
                             },
                           ),

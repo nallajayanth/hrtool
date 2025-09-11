@@ -2,10 +2,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hr_tool/riverpod/user_details/provider/user_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
+  
   const LoginScreen({super.key});
 
   @override
@@ -13,11 +15,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen>
+
     with TickerProviderStateMixin {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
+
   final _passwordFocus = FocusNode();
 
   bool isLoading = false;
@@ -102,6 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   Future<void> login() async {
     if (!_formKey.currentState!.validate()) {
+
       _shakeController.reset();
       _shakeController.forward();
       return;
@@ -114,6 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
     final supabase = Supabase.instance.client;
 
+
     try {
       final response = await supabase.auth.signInWithPassword(
         email: emailController.text.trim(),
@@ -122,6 +128,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
       final userDetails = await ref.read(userProviderProvider.future);
       final user = userDetails.first;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_role', user.role.toLowerCase());
+
+
+
 
       if (user.role.toLowerCase() == 'manager') {
         context.go("/manager-home");
@@ -303,10 +314,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                               ),
                                         ),
                                         validator: (value) {
-                                          if (value == null || value.isEmpty)
+                                          if (value == null || value.isEmpty) {
                                             return 'Enter email';
-                                          if (!value.contains('@'))
+                                          }
+                                          if (!value.contains('@')) {
                                             return 'Invalid email';
+                                          }
                                           return null;
                                         },
                                         onFieldSubmitted: (_) => FocusScope.of(
@@ -379,10 +392,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                               ),
                                         ),
                                         validator: (value) {
-                                          if (value == null || value.isEmpty)
+                                          if (value == null || value.isEmpty) {
                                             return 'Enter password';
-                                          if (value.length < 6)
+                                          }
+                                          if (value.length < 6) {
                                             return 'Password too short';
+                                          }
                                           return null;
                                         },
                                       ),

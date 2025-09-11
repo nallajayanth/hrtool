@@ -8,7 +8,7 @@ import 'package:hr_tool/riverpod/task/service/task_service.dart';
 import 'package:hr_tool/riverpod/task/provider/task_provider.dart';
 
 class EmployeeTasksScreen extends ConsumerStatefulWidget {
-  const EmployeeTasksScreen({Key? key}) : super(key: key);
+  const EmployeeTasksScreen({super.key});
 
   @override
   ConsumerState<EmployeeTasksScreen> createState() =>
@@ -429,18 +429,8 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
   Widget _taskCard(TaskModel task) {
     // due_date might be DateTime or string in model. handle both gracefully.
     DateTime? due;
-    if (task.due_date is DateTime) {
-      due = task.due_date as DateTime;
-    } else if (task.due_date is String) {
-      try {
-        due = DateTime.parse(task.due_date as String);
-      } catch (_) {
-        due = null;
-      }
-    } else {
-      due = null;
-    }
-
+    due = task.due_date as DateTime;
+  
     final dueText = due != null
         ? DateFormat.yMMMd().format(due)
         : 'No due date';
@@ -681,16 +671,8 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
 
   Widget _taskDetailDialog(TaskModel task, BuildContext dialogContext) {
     DateTime? due;
-    if (task.due_date is DateTime) {
-      due = task.due_date as DateTime;
-    } else if (task.due_date is String) {
-      try {
-        due = DateTime.parse(task.due_date as String);
-      } catch (_) {
-        due = null;
-      }
-    }
-
+    due = task.due_date as DateTime;
+  
     final dueText = due != null
         ? DateFormat.yMMMMd().format(due)
         : 'No due date';

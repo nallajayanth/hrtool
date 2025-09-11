@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddEmployeesScreen extends StatefulWidget {
-  const AddEmployeesScreen({Key? key}) : super(key: key);
+  const AddEmployeesScreen({super.key});
 
   @override
   State<AddEmployeesScreen> createState() => _AddEmployeesScreenState();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 class EmployeeMainScaffold extends StatefulWidget {
   final Widget child;
   const EmployeeMainScaffold({super.key, required this.child});
@@ -38,7 +37,7 @@ class _EmployeeMainScaffoldState extends State<EmployeeMainScaffold> {
           color: Colors.white,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+            topRight: Radius.circular(20), 
           ),
           boxShadow: [
             BoxShadow(
