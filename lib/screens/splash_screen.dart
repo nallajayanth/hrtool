@@ -60,7 +60,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _checkAuthAndNavigate() async {
     final supabase = Supabase.instance.client;
-    final userId = supabase.auth.currentUser!.id;
     final prefs = await SharedPreferences.getInstance();
     String? savedUserRole = prefs.getString('user_role');
     print("User Role is : $savedUserRole");
@@ -72,10 +71,10 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(seconds: 3));
 
     if (session == null) {
-      if (!mounted) return;
+      
       setState(() => _statusText = "Redirecting to login...");
       await Future.delayed(const Duration(milliseconds: 600));
-      if (mounted) context.go('/login');
+       context.go('/login');
       return;
     }
 
@@ -90,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen>
         setState(() => _statusText = "Profile not found, signing out...");
         await supabase.auth.signOut();
         await Future.delayed(const Duration(milliseconds: 600));
-        if (mounted) context.go('/login');
+       context.go('/login');
         return;
       }
 
@@ -99,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
       debugPrint("Error during splash navigation: $e");
       setState(() => _statusText = "Something went wrong...");
       await Future.delayed(const Duration(milliseconds: 800));
-      if (mounted) context.go('/login');
+      context.go('/login');
     }
   }
 
