@@ -1,8 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:hr_tool/riverpod/user_details/model/user_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

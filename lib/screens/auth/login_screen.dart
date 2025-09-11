@@ -7,7 +7,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hr_tool/riverpod/user_details/provider/user_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  
   const LoginScreen({super.key});
 
   @override
@@ -15,7 +14,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen>
-
     with TickerProviderStateMixin {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -106,7 +104,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   Future<void> login() async {
     if (!_formKey.currentState!.validate()) {
-
       _shakeController.reset();
       _shakeController.forward();
       return;
@@ -119,7 +116,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
     final supabase = Supabase.instance.client;
 
-
     try {
       final response = await supabase.auth.signInWithPassword(
         email: emailController.text.trim(),
@@ -128,11 +124,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
       final userDetails = await ref.read(userProviderProvider.future);
       final user = userDetails.first;
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user_role', user.role.toLowerCase());
-
-
-
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_role', user.role.toLowerCase());
 
       if (user.role.toLowerCase() == 'manager') {
         context.go("/manager-home");
