@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,10 +70,9 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(seconds: 3));
 
     if (session == null) {
-      
       setState(() => _statusText = "Redirecting to login...");
       await Future.delayed(const Duration(milliseconds: 600));
-       context.go('/login');
+      context.go('/login');
       return;
     }
 
@@ -89,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
         setState(() => _statusText = "Profile not found, signing out...");
         await supabase.auth.signOut();
         await Future.delayed(const Duration(milliseconds: 600));
-       context.go('/login');
+        context.go('/login');
         return;
       }
 
@@ -176,11 +174,13 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.business_center_rounded,
-                      size: 60,
-                      color: Colors.white,
-                    ),
+                    child:
+                        // const Icon(
+                        //   Icons.business_center_rounded,
+                        //   size: 60,
+                        //   color: Colors.white,
+                        // ),
+                        Image.asset('assets/logo.png'),
                   ),
                 );
               },
@@ -188,7 +188,6 @@ class _SplashScreenState extends State<SplashScreen>
 
             const SizedBox(height: 40),
 
-            
             SlideTransition(
               position: _slideAnimation,
               child: FadeTransition(

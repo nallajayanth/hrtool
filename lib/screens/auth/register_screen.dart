@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -133,8 +132,8 @@ class _RegisterScreenState extends State<RegisterScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF43CEA2),
-              Color(0xFF185A9D),
+              Color(0xFF1A237E),
+              Color(0xFF303F9F),
             ], // Attractive "Endless River" gradient for a fresh, modern feel
           ),
         ),
@@ -151,11 +150,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // HR-themed Logo
-                        const Icon(
-                          Icons.business_center_rounded,
-                          size: 120,
-                          color: Colors.white,
-                        ),
+                        // const Icon(
+                        //   Icons.business_center_rounded,
+                        //   size: 120,
+                        //   color: Colors.white,
+                        // ),
+                        Image.asset('assets/logo.png', cacheHeight: 120),
                         const SizedBox(height: 16),
                         ShaderMask(
                           shaderCallback: (bounds) => const LinearGradient(
@@ -438,7 +438,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                 horizontal: 20,
                                               ),
                                         ),
-                                        dropdownColor: Colors.teal[900],
+                                        dropdownColor: const Color(0xFF303F9F),
                                         style: const TextStyle(
                                           color: Colors.white,
                                         ),

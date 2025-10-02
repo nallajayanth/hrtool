@@ -36,13 +36,11 @@ class _ManagerAttendanceOverviewState
   Future<void> _fetchManagerDepartment() async {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) return;
-
     final userInfo = await supabase
         .from('users')
         .select('department')
         .eq('id', userId)
         .single();
-
     setState(() {
       managerDepartment = userInfo['department'];
     });
@@ -64,9 +62,7 @@ class _ManagerAttendanceOverviewState
 
   Future<void> _fetchAttendanceData() async {
     if (employees.isEmpty) return;
-
     final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
-
     final response = await supabase
         .from('attendance')
         .select()
@@ -447,6 +443,6 @@ class _ManagerAttendanceOverviewState
                 ],
               ),
             ),
-    );
+    );  
   }
 }

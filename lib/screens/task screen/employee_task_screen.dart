@@ -1,4 +1,3 @@
-
 // lib/screens/tasks/employee_tasks_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,7 +69,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
         return const Color(0xFFFF8C00);
       case 'pending':
       default:
-        return const Color(0xFF6C7B7F);
+        return const Color.fromARGB(255, 11, 176, 226);
     }
   }
 
@@ -101,8 +100,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
         return Icons.schedule_outlined;
     }
   }
- 
- 
+
   Future<void> _updateStatus(String taskId, String newStatus) async {
     setState(() => _busy = true);
     try {
@@ -432,7 +430,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
     // due_date might be DateTime or string in model. handle both gracefully.
     DateTime? due;
     due = task.due_date as DateTime;
-  
+
     final dueText = due != null
         ? DateFormat.yMMMd().format(due)
         : 'No due date';
@@ -674,7 +672,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
   Widget _taskDetailDialog(TaskModel task, BuildContext dialogContext) {
     DateTime? due;
     due = task.due_date as DateTime;
-  
+
     final dueText = due != null
         ? DateFormat.yMMMMd().format(due)
         : 'No due date';

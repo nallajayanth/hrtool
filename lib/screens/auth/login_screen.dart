@@ -185,12 +185,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         // HR-themed Logo
-                        const Icon(
-                          Icons
-                              .business_center_rounded, // Changed to business center for HR/tool theme
-                          size: 120,
-                          color: Colors.white,
-                        ),
+                        // const Icon(
+                        //   Icons
+                        //       .business_center_rounded, // Changed to business center for HR/tool theme
+                        //   size: 120,
+                        //   color: Colors.white,
+                        // ),
+                        Image.asset('assets/logo.png', cacheHeight: 120),
                         const SizedBox(height: 16),
                         ShaderMask(
                           shaderCallback: (bounds) => const LinearGradient(

@@ -44,23 +44,14 @@ class _EmployeeLeaveScreenState extends State<EmployeeLeaveScreen> {
     });
   }
 
-  Future<void> _pickDate({required bool isStart}) async {
+  Future<DateTime?> _pickDate({required bool isStart}) async {
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2100),
     );
-
-    if (pickedDate != null) {
-      setState(() {
-        if (isStart) {
-          startDate = pickedDate;
-        } else {
-          endDate = pickedDate;
-        }
-      });
-    }
+    return pickedDate;
   }
 
   Future<void> _submitLeave() async {
@@ -131,88 +122,123 @@ class _EmployeeLeaveScreenState extends State<EmployeeLeaveScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 20,
-          right: 20,
-          top: 20,
-        ),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Apply for Leave",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: selectedLeaveType,
-                  decoration: const InputDecoration(
-                    labelText: "Leave Type",
-                    border: OutlineInputBorder(),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 20,
+                right: 20,
+                top: 20,
+              ),
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "Apply for Leave",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Leave type
+                      DropdownButtonFormField<String>(
+                        value: selectedLeaveType,
+                        decoration: const InputDecoration(
+                          labelText: "Leave Type",
+                          border: OutlineInputBorder(),
+                        ),
+                        items: leaveTypes
+                            .map(
+                              (type) => DropdownMenuItem(
+                                value: type,
+                                child: Text(type),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (val) =>
+                            setModalState(() => selectedLeaveType = val),
+                        validator: (val) =>
+                            val == null ? 'Please select leave type' : null,
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Start date
+                      ListTile(
+                        title: Text(
+                          startDate != null
+                              ? "Start Date: ${DateFormat('dd MMM yyyy').format(startDate!)}"
+                              : "Select Start Date",
+                        ),
+                        trailing: const Icon(Icons.calendar_today),
+                        onTap: () async {
+                          final picked = await _pickDate(isStart: true);
+                          if (picked != null) {
+                            setModalState(() => startDate = picked);
+                          }
+                        },
+                      ),
+
+                      // End date
+                      ListTile(
+                        title: Text(
+                          endDate != null
+                              ? "End Date: ${DateFormat('dd MMM yyyy').format(endDate!)}"
+                              : "Select End Date",
+                        ),
+                        trailing: const Icon(Icons.calendar_today),
+                        onTap: () async {
+                          final picked = await _pickDate(isStart: false);
+                          if (picked != null) {
+                            setModalState(() => endDate = picked);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Reason
+                      TextFormField(
+                        controller: reasonController,
+                        maxLines: 3,
+                        decoration: const InputDecoration(
+                          labelText: "Reason",
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (val) => val == null || val.isEmpty
+                            ? 'Reason required'
+                            : null,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Submit button
+                      ElevatedButton.icon(
+                        onPressed: isSubmitting ? null : _submitLeave,
+                        icon: const Icon(Icons.send),
+                        label: isSubmitting
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text("Submit"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          minimumSize: const Size(double.infinity, 48),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
-                  items: leaveTypes
-                      .map(
-                        (type) =>
-                            DropdownMenuItem(value: type, child: Text(type)),
-                      )
-                      .toList(),
-                  onChanged: (val) => setState(() => selectedLeaveType = val),
-                  validator: (val) =>
-                      val == null ? 'Please select leave type' : null,
                 ),
-                const SizedBox(height: 12),
-                ListTile(
-                  title: Text(
-                    startDate != null
-                        ? "Start Date: ${DateFormat('dd MMM yyyy').format(startDate!)}"
-                        : "Select Start Date",
-                  ),
-                  trailing: const Icon(Icons.calendar_today),
-                  onTap: () => _pickDate(isStart: true),
-                ),
-                ListTile(
-                  title: Text(
-                    endDate != null
-                        ? "End Date: ${DateFormat('dd MMM yyyy').format(endDate!)}"
-                        : "Select End Date",
-                  ),
-                  trailing: const Icon(Icons.calendar_today),
-                  onTap: () => _pickDate(isStart: false),
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: reasonController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: "Reason",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (val) =>
-                      val == null || val.isEmpty ? 'Reason required' : null,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: isSubmitting ? null : _submitLeave,
-                  icon: const Icon(Icons.send),
-                  label: isSubmitting
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Submit"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    minimumSize: const Size(double.infinity, 48),
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
