@@ -13,86 +13,20 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen>
-    with TickerProviderStateMixin {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
-
   final _passwordFocus = FocusNode();
 
   bool isLoading = false;
   String? error;
   bool _obscurePassword = true;
 
-  late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
-
-  late AnimationController _slideController;
-  late Animation<Offset> _slideAnimation;
-
-  late AnimationController _shakeController;
-  late Animation<Offset> _shakeAnimation;
-
   @override
   void initState() {
     super.initState();
-
-    // Fade Animation
-    _fadeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
-    );
-
-    // Slide Animation
-    _slideController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-    _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
-          CurvedAnimation(parent: _slideController, curve: Curves.easeOutBack),
-        );
-
-    // Shake Animation for Error
-    _shakeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-    _shakeAnimation =
-        TweenSequence<Offset>([
-          TweenSequenceItem(
-            tween: Tween(begin: Offset.zero, end: const Offset(10, 0)),
-            weight: 1,
-          ),
-          TweenSequenceItem(
-            tween: Tween(begin: const Offset(10, 0), end: const Offset(-10, 0)),
-            weight: 1,
-          ),
-          TweenSequenceItem(
-            tween: Tween(begin: const Offset(-10, 0), end: const Offset(10, 0)),
-            weight: 1,
-          ),
-          TweenSequenceItem(
-            tween: Tween(begin: const Offset(10, 0), end: const Offset(-10, 0)),
-            weight: 1,
-          ),
-          TweenSequenceItem(
-            tween: Tween(begin: const Offset(-10, 0), end: Offset.zero),
-            weight: 1,
-          ),
-        ]).animate(
-          CurvedAnimation(parent: _shakeController, curve: Curves.easeInOut),
-        );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fadeController.forward();
-      _slideController.forward();
-    });
 
     _emailFocus.addListener(() {
       setState(() {});
@@ -104,8 +38,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   Future<void> login() async {
     if (!_formKey.currentState!.validate()) {
-      _shakeController.reset();
-      _shakeController.forward();
       return;
     }
 
@@ -136,8 +68,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       setState(() {
         error = e.toString();
       });
-      _shakeController.reset();
-      _shakeController.forward();
     } finally {
       setState(() {
         isLoading = false;
@@ -147,9 +77,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   @override
   void dispose() {
-    _fadeController.dispose();
-    _slideController.dispose();
-    _shakeController.dispose();
     emailController.dispose();
     passwordController.dispose();
     _emailFocus.dispose();
@@ -177,370 +104,331 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // HR-themed Logo
-                        // const Icon(
-                        //   Icons
-                        //       .business_center_rounded, // Changed to business center for HR/tool theme
-                        //   size: 120,
-                        //   color: Colors.white,
-                        // ),
-                        Image.asset('assets/logo.png', cacheHeight: 120),
-                        const SizedBox(height: 16),
-                        ShaderMask(
-                          shaderCallback: (bounds) => const LinearGradient(
-                            colors: [Colors.white, Colors.blueAccent],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ).createShader(bounds),
-                          child: const Text(
-                            'HR Tool',
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20),
+                    // HR-themed Logo
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.transparent,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'assets/logo.png',
+                          cacheHeight: 120,
+                          fit: BoxFit.cover,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Empower Your Workforce Management',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white.withOpacity(0.8),
-                            fontStyle: FontStyle.italic,
-                          ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [Colors.white, Colors.blueAccent],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ).createShader(bounds),
+                      child: const Text(
+                        'HR Tool',
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                        const SizedBox(height: 48),
-                        // Enhanced Glassmorphic Form Card with subtle shadow for depth
-                        AnimatedBuilder(
-                          animation: _shakeAnimation,
-                          builder: (context, child) {
-                            return Transform.translate(
-                              offset: _shakeAnimation.value,
-                              child: child,
-                            );
-                          },
-                          child: ClipRRect(
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Empower Your Workforce Management',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white.withOpacity(0.8),
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    const SizedBox(height: 48),
+                    // Enhanced Glassmorphic Form Card with subtle shadow for depth
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                        child: Container(
+                          padding: const EdgeInsets.all(32),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(28),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                              child: Container(
-                                padding: const EdgeInsets.all(32),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.08),
-                                  borderRadius: BorderRadius.circular(28),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.15),
-                                    width: 1.5,
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.15),
+                              width: 1.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // Email Field with enhanced focus effects
+                                TextFormField(
+                                  controller: emailController,
+                                  focusNode: _emailFocus,
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
+                                  decoration: InputDecoration(
+                                    labelText: 'Corporate Email',
+                                    labelStyle: TextStyle(
+                                      color: _emailFocus.hasFocus
+                                          ? Colors.blueAccent
+                                          : Colors.white70,
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                  ],
+                                    hintText: 'Enter your work email',
+                                    hintStyle: TextStyle(
+                                      color: Colors.white.withOpacity(0.5),
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.email_rounded,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.05),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blueAccent,
+                                        width: 2.5,
+                                      ),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 18,
+                                      horizontal: 20,
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter email';
+                                    }
+                                    if (!value.contains('@')) {
+                                      return 'Invalid email';
+                                    }
+                                    return null;
+                                  },
+                                  onFieldSubmitted: (_) => FocusScope.of(
+                                    context,
+                                  ).requestFocus(_passwordFocus),
                                 ),
-                                child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                                const SizedBox(height: 20),
+                                // Password Field
+                                TextFormField(
+                                  controller: passwordController,
+                                  focusNode: _passwordFocus,
+                                  obscureText: _obscurePassword,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Secure Password',
+                                    labelStyle: TextStyle(
+                                      color: _passwordFocus.hasFocus
+                                          ? Colors.blueAccent
+                                          : Colors.white70,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    hintText: 'Enter your password',
+                                    hintStyle: TextStyle(
+                                      color: Colors.white.withOpacity(0.5),
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.lock_rounded,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword
+                                            ? Icons.visibility_off_rounded
+                                            : Icons.visibility_rounded,
+                                        color: Colors.blueAccent,
+                                      ),
+                                      onPressed: () => setState(
+                                        () => _obscurePassword =
+                                            !_obscurePassword,
+                                      ),
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.05),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blueAccent,
+                                        width: 2.5,
+                                      ),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 18,
+                                      horizontal: 20,
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter password';
+                                    }
+                                    if (value.length < 6) {
+                                      return 'Password too short';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                // Forgot Password with underline for better UX
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Forgot password? Coming soon!',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Forgot Password?',
+                                      style: TextStyle(
+                                        color: Colors.blueAccent.withOpacity(
+                                          0.9,
+                                        ),
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.blueAccent
+                                            .withOpacity(0.5),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                // Error Message with icon for better visibility
+                                if (error != null)
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      // Email Field with enhanced focus effects
-                                      TextFormField(
-                                        controller: emailController,
-                                        focusNode: _emailFocus,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        decoration: InputDecoration(
-                                          labelText: 'Corporate Email',
-                                          labelStyle: TextStyle(
-                                            color: _emailFocus.hasFocus
-                                                ? Colors.blueAccent
-                                                : Colors.white70,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                          hintText: 'Enter your work email',
-                                          hintStyle: TextStyle(
-                                            color: Colors.white.withOpacity(
-                                              0.5,
-                                            ),
-                                          ),
-                                          prefixIcon: const Icon(
-                                            Icons.email_rounded,
-                                            color: Colors.blueAccent,
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.white.withOpacity(
-                                            0.05,
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                            borderSide: const BorderSide(
-                                              color: Colors.blueAccent,
-                                              width: 2.5,
-                                            ),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                vertical: 18,
-                                                horizontal: 20,
-                                              ),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Enter email';
-                                          }
-                                          if (!value.contains('@')) {
-                                            return 'Invalid email';
-                                          }
-                                          return null;
-                                        },
-                                        onFieldSubmitted: (_) => FocusScope.of(
-                                          context,
-                                        ).requestFocus(_passwordFocus),
+                                      const Icon(
+                                        Icons.error_outline_rounded,
+                                        color: Colors.redAccent,
+                                        size: 20,
                                       ),
-                                      const SizedBox(height: 20),
-                                      // Password Field
-                                      TextFormField(
-                                        controller: passwordController,
-                                        focusNode: _passwordFocus,
-                                        obscureText: _obscurePassword,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        decoration: InputDecoration(
-                                          labelText: 'Secure Password',
-                                          labelStyle: TextStyle(
-                                            color: _passwordFocus.hasFocus
-                                                ? Colors.blueAccent
-                                                : Colors.white70,
-                                            fontWeight: FontWeight.w500,
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          error!,
+                                          style: const TextStyle(
+                                            color: Colors.redAccent,
+                                            fontSize: 14,
                                           ),
-                                          hintText: 'Enter your password',
-                                          hintStyle: TextStyle(
-                                            color: Colors.white.withOpacity(
-                                              0.5,
-                                            ),
-                                          ),
-                                          prefixIcon: const Icon(
-                                            Icons.lock_rounded,
-                                            color: Colors.blueAccent,
-                                          ),
-                                          suffixIcon: IconButton(
-                                            icon: Icon(
-                                              _obscurePassword
-                                                  ? Icons.visibility_off_rounded
-                                                  : Icons.visibility_rounded,
-                                              color: Colors.blueAccent,
-                                            ),
-                                            onPressed: () => setState(
-                                              () => _obscurePassword =
-                                                  !_obscurePassword,
-                                            ),
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.white.withOpacity(
-                                            0.05,
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                            borderSide: const BorderSide(
-                                              color: Colors.blueAccent,
-                                              width: 2.5,
-                                            ),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                vertical: 18,
-                                                horizontal: 20,
-                                              ),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Enter password';
-                                          }
-                                          if (value.length < 6) {
-                                            return 'Password too short';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      const SizedBox(height: 20),
-                                      // Forgot Password with underline for better UX
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: TextButton(
-                                          onPressed: () {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  'Forgot password? Coming soon!',
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Text(
-                                            'Forgot Password?',
-                                            style: TextStyle(
-                                              color: Colors.blueAccent
-                                                  .withOpacity(0.9),
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              decorationColor: Colors.blueAccent
-                                                  .withOpacity(0.5),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      // Error Message with icon for better visibility
-                                      if (error != null)
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              Icons.error_outline_rounded,
-                                              color: Colors.redAccent,
-                                              size: 20,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(
-                                                error!,
-                                                style: const TextStyle(
-                                                  color: Colors.redAccent,
-                                                  fontSize: 14,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      const SizedBox(height: 20),
-                                      // Login Button with premium gradient and shadow
-                                      ElevatedButton(
-                                        onPressed: isLoading ? null : login,
-                                        style: ElevatedButton.styleFrom(
-                                          padding: EdgeInsets.zero,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          elevation: 8,
-                                          shadowColor: Colors.blueAccent
-                                              .withOpacity(0.5),
-                                        ),
-                                        child: Ink(
-                                          decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                              colors: [
-                                                Colors.blueAccent,
-                                                Colors.indigoAccent,
-                                              ],
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Container(
-                                            height: 56,
-                                            alignment: Alignment.center,
-                                            child: isLoading
-                                                ? const SizedBox(
-                                                    width: 24,
-                                                    height: 24,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          strokeWidth: 2.5,
-                                                          color: Colors.white,
-                                                        ),
-                                                  )
-                                                : const Text(
-                                                    'Secure Login',
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                          ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                     ],
                                   ),
+                                const SizedBox(height: 20),
+                                // Login Button with premium gradient and shadow
+                                ElevatedButton(
+                                  onPressed: isLoading ? null : login,
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    elevation: 8,
+                                    shadowColor: Colors.blueAccent.withOpacity(
+                                      0.5,
+                                    ),
+                                  ),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Colors.blueAccent,
+                                          Colors.indigoAccent,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Container(
+                                      height: 56,
+                                      alignment: Alignment.center,
+                                      child: isLoading
+                                          ? const SizedBox(
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2.5,
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          : const Text(
+                                              'Secure Login',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ),
-                        const SizedBox(height: 32),
-                        // Register section with subtle animation
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "New to HR Tool? ",
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.7),
-                                  fontSize: 16,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () => context.push("/register"),
-                                child: const Text(
-                                  'Register Now',
-                                  style: TextStyle(
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // Register section
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "New to HR Tool? ",
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 16,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => context.push("/register"),
+                          child: const Text(
+                            'Register Now',
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),

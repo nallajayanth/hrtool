@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hr_tool/riverpod/employee%20list%20provider/employee_list_provider.dart';
-
 
 class ManagerAddTaskScreen extends ConsumerStatefulWidget {
   const ManagerAddTaskScreen({super.key});
@@ -32,7 +30,6 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
   void _navigateToViewTasks() {
     context.push('/view-assigned-tasks');
   }
-
 
   // Open assign task bottom sheet for a specific employee
   void _openAssignTaskSheet(Map<String, dynamic> employee) {
@@ -98,20 +95,20 @@ class _ManagerAddTaskScreenState extends ConsumerState<ManagerAddTaskScreen> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: IconButton(
-                      tooltip: 'Toggle layout',
-                      onPressed: () => setState(() => _isGrid = !_isGrid),
-                      icon: Icon(
-                        _isGrid ? Icons.view_list : Icons.grid_view,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white.withOpacity(0.2),
+                  //     borderRadius: BorderRadius.circular(10),
+                  //   ),
+                  //   child: IconButton(
+                  //     tooltip: 'Toggle layout',
+                  //     onPressed: () => setState(() => _isGrid = !_isGrid),
+                  //     icon: Icon(
+                  //       _isGrid ? Icons.view_list : Icons.grid_view,
+                  //       color: Colors.white,
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(width: 8),
                   Container(
                     decoration: BoxDecoration(

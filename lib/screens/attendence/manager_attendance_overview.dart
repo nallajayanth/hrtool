@@ -163,11 +163,15 @@ class _ManagerAttendanceOverviewState
     final presentCount = attendanceData
         .where(
           (attendance) =>
-              attendance['status']?.toString().toLowerCase() == 'present',
+              attendance['status']?.toString().toLowerCase() == 'present' &&
+              employees.any((emp) => emp['id'] == attendance['user_id']),
         )
         .length;
 
-    final absentCount = employees.length - presentCount;
+    // Calculate absent count defensively to avoid negative values.
+    final absentCount = (employees.length - presentCount) < 0
+        ? 0
+        : employees.length - presentCount;
     final totalEmployees = employees.length;
 
     return Padding(
@@ -443,6 +447,6 @@ class _ManagerAttendanceOverviewState
                 ],
               ),
             ),
-    );  
+    );
   }
 }

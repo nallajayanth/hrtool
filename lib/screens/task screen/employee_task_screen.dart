@@ -206,7 +206,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
                   'Mark In-Progress',
                   Icons.autorenew_outlined,
                   const Color(0xFFFF8C00),
-                ),
+                ), 
                 _buildStatusOption(
                   ctx,
                   'completed',
@@ -280,95 +280,95 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
     );
   }
 
-  Widget _buildHeaderCounts(List<TaskModel> tasks) {
-    final total = tasks.length;
-    final completed = tasks
-        .where((t) => (t.status).toLowerCase() == 'completed')
-        .length;
-    final inProgress = tasks.where((t) {
-      final s = (t.status).toLowerCase();
-      return s == 'in-progress' || s == 'in progress';
-    }).length;
-    final pending = tasks
-        .where((t) => (t.status).toLowerCase() == 'pending')
-        .length;
+  // Widget _buildHeaderCounts(List<TaskModel> tasks) {
+  //   final total = tasks.length;
+  //   final completed = tasks
+  //       .where((t) => (t.status).toLowerCase() == 'completed')
+  //       .length;
+  //   final inProgress = tasks.where((t) {
+  //     final s = (t.status).toLowerCase();
+  //     return s == 'in-progress' || s == 'in progress';
+  //   }).length;
+  //   final pending = tasks
+  //       .where((t) => (t.status).toLowerCase() == 'pending')
+  //       .length;
 
-    return AnimatedBuilder(
-      animation: _headerAnimation,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, 50 * (1 - _headerAnimation.value)),
-          child: Opacity(
-            opacity: _headerAnimation.value,
-            child: Container(
-              margin: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Task Overview',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade800,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildStatCard(
-                          'Total Tasks',
-                          total.toString(),
-                          const Color(0xFF6366F1),
-                          const Color(0xFF8B5CF6),
-                          Icons.task_alt_outlined,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildStatCard(
-                          'Completed',
-                          completed.toString(),
-                          const Color(0xFF22C55E),
-                          const Color(0xFF16A34A),
-                          Icons.check_circle_outline,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildStatCard(
-                          'In Progress',
-                          inProgress.toString(),
-                          const Color(0xFFF59E0B),
-                          const Color(0xFFEF4444),
-                          Icons.autorenew_outlined,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildStatCard(
-                          'Pending',
-                          pending.toString(),
-                          const Color(0xFF6B7280),
-                          const Color(0xFF9CA3AF),
-                          Icons.schedule_outlined,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //   return AnimatedBuilder(
+  //     animation: _headerAnimation,
+  //     builder: (context, child) {
+  //       return Transform.translate(
+  //         offset: Offset(0, 50 * (1 - _headerAnimation.value)),
+  //         child: Opacity(
+  //           opacity: _headerAnimation.value,
+  //           child: Container(
+  //             margin: const EdgeInsets.all(16),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   'Task Overview',
+  //                   style: TextStyle(
+  //                     fontSize: 18,
+  //                     fontWeight: FontWeight.w600,
+  //                     color: Colors.grey.shade800,
+  //                   ),
+  //                 ),
+  //                 const SizedBox(height: 16),
+  //                 Row(
+  //                   children: [
+  //                     Expanded(
+  //                       child: _buildStatCard(
+  //                         'Total Tasks',
+  //                         total.toString(),
+  //                         const Color(0xFF6366F1),
+  //                         const Color(0xFF8B5CF6),
+  //                         Icons.task_alt_outlined,
+  //                       ),
+  //                     ),
+  //                     const SizedBox(width: 12),
+  //                     Expanded(
+  //                       child: _buildStatCard(
+  //                         'Completed',
+  //                         completed.toString(),
+  //                         const Color(0xFF22C55E),
+  //                         const Color(0xFF16A34A),
+  //                         Icons.check_circle_outline,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //                 const SizedBox(height: 12),
+  //                 Row(
+  //                   children: [
+  //                     Expanded(
+  //                       child: _buildStatCard(
+  //                         'In Progress',
+  //                         inProgress.toString(),
+  //                         const Color(0xFFF59E0B),
+  //                         const Color(0xFFEF4444),
+  //                         Icons.autorenew_outlined,
+  //                       ),
+  //                     ),
+  //                     const SizedBox(width: 12),
+  //                     Expanded(
+  //                       child: _buildStatCard(
+  //                         'Pending',
+  //                         pending.toString(),
+  //                         const Color(0xFF6B7280),
+  //                         const Color(0xFF9CA3AF),
+  //                         Icons.schedule_outlined,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildStatCard(
     String label,
@@ -429,7 +429,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
   Widget _taskCard(TaskModel task) {
     // due_date might be DateTime or string in model. handle both gracefully.
     DateTime? due;
-    due = task.due_date as DateTime;
+    due = task.due_date;
 
     final dueText = due != null
         ? DateFormat.yMMMd().format(due)
@@ -671,7 +671,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
 
   Widget _taskDetailDialog(TaskModel task, BuildContext dialogContext) {
     DateTime? due;
-    due = task.due_date as DateTime;
+    due = task.due_date;
 
     final dueText = due != null
         ? DateFormat.yMMMMd().format(due)
@@ -951,25 +951,25 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
             );
           }
 
-          // sort by due date (nulls pushed to end)
-          tasks.sort((a, b) {
-            DateTime? da;
-            DateTime? db;
-            try {
-              da = DateTime.parse(a.due_date as String);
-            } catch (_) {
-              da = null;
-            }
-            try {
-              db = DateTime.parse(b.due_date as String);
-            } catch (_) {
-              db = null;
-            }
-            if (da == null && db == null) return 0;
-            if (da == null) return 1;
-            if (db == null) return -1;
-            return da.compareTo(db);
-          });
+          // // sort by due date (nulls pushed to end)
+          // tasks.sort((a, b) {
+          //   DateTime? da;
+          //   DateTime? db;
+          //   try {
+          //     da = DateTime.parse(a.due_date as String);
+          //   } catch (_) {
+          //     da = null;
+          //   }
+          //   try {
+          //     db = DateTime.parse(b.due_date as String);
+          //   } catch (_) {
+          //     db = null;
+          //   }
+          //   if (da == null && db == null) return 0;
+          //   if (da == null) return 1;
+          //   if (db == null) return -1;
+          //   return da.compareTo(db);
+          // });
 
           return RefreshIndicator(
             onRefresh: _refresh,
@@ -978,7 +978,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
                 const SizedBox(height: 8),
-                _buildHeaderCounts(tasks),
+                // _buildHeaderCounts(tasks),
                 const SizedBox(height: 8),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -1018,7 +1018,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          '${tasks.length} ${tasks.length == 1 ? 'Task' : 'Tasks'}',
+                          '${tasks.length} Tasks',
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,

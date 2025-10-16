@@ -13,7 +13,8 @@ class ViewAssignedTasksScreen extends ConsumerStatefulWidget {
       _ViewAssignedTasksScreenState();
 }
 
-class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScreen>
+class _ViewAssignedTasksScreenState
+    extends ConsumerState<ViewAssignedTasksScreen>
     with TickerProviderStateMixin {
   String _searchQuery = '';
   // String _selectedStatus = 'all';
@@ -59,13 +60,16 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
 
   List<TaskModel> _filterTasks(List<TaskModel> tasks, String filter) {
     var filtered = tasks.where((task) {
-      final matchesSearch = _searchQuery.isEmpty ||
+      final matchesSearch =
+          _searchQuery.isEmpty ||
           task.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          task.employee_name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          task.employee_name.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ) ||
           task.description.toLowerCase().contains(_searchQuery.toLowerCase());
 
-      final matchesStatus = filter == 'all' ||
-          task.status.toLowerCase() == filter.toLowerCase();
+      final matchesStatus =
+          filter == 'all' || task.status.toLowerCase() == filter.toLowerCase();
 
       return matchesSearch && matchesStatus;
     }).toList();
@@ -82,10 +86,7 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.teal.shade600,
-            Colors.teal.shade800,
-          ],
+          colors: [Colors.teal.shade600, Colors.teal.shade800],
         ),
       ),
       child: Column(
@@ -93,6 +94,13 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
         children: [
           Row(
             children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+              SizedBox(width: 20),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -120,10 +128,7 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
                     ),
                     Text(
                       'Manage your team\'s assignments',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                   ],
                 ),
@@ -137,7 +142,7 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),            
+                  color: Colors.black.withOpacity(0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -161,109 +166,109 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
     );
   }
 
-  Widget _buildStatsCard(List<TaskModel> tasks) {
-    final pending = tasks.where((t) => t.status == 'pending').length;
-    final inProgress = tasks.where((t) => t.status == 'in-progress').length;
-    // final completed = tasks.where((t) => t.status == 'completed').length;
-    final overdue = tasks.where((t) => 
-        t.status != 'completed' && t.due_date.isBefore(DateTime.now())).length;
+  // Widget _buildStatsCard(List<TaskModel> tasks) {
+  //   final pending = tasks.where((t) => t.status == 'pending').length;
+  //   final inProgress = tasks.where((t) => t.status == 'in-progress').length;
+  //   // final completed = tasks.where((t) => t.status == 'completed').length;
+  //   final overdue = tasks.where((t) =>
+  //       t.status != 'completed' && t.due_date.isBefore(DateTime.now())).length;
 
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          _buildStatItem('Total', tasks.length.toString(), Colors.blue),
-          _buildStatItem('Pending', pending.toString(), Colors.orange),
-          _buildStatItem('Active', inProgress.toString(), Colors.teal),
-          _buildStatItem('Overdue', overdue.toString(), Colors.red),
-        ],
-      ),
-    );
-  }
+  //   return Container(
+  //     margin: const EdgeInsets.all(16),
+  //     padding: const EdgeInsets.all(20),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(16),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.grey.withOpacity(0.1),
+  //           blurRadius: 10,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         _buildStatItem('Total', tasks.length.toString(), Colors.blue),
+  //         _buildStatItem('Pending', pending.toString(), Colors.orange),
+  //         _buildStatItem('Active', inProgress.toString(), Colors.teal),
+  //         _buildStatItem('Overdue', overdue.toString(), Colors.red),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildStatItem(String label, String value, Color color) {
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildStatItem(String label, String value, Color color) {
+  //   return Expanded(
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           padding: const EdgeInsets.all(12),
+  //           decoration: BoxDecoration(
+  //             color: color.withOpacity(0.1),
+  //             borderRadius: BorderRadius.circular(12),
+  //           ),
+  //           child: Text(
+  //             value,
+  //             style: TextStyle(
+  //               fontSize: 18,
+  //               fontWeight: FontWeight.bold,
+  //               color: color,
+  //             ),
+  //           ),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         Text(
+  //           label,
+  //           style: const TextStyle(
+  //             fontSize: 12,
+  //             fontWeight: FontWeight.w600,
+  //             color: Colors.grey,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildTabBar() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        indicator: BoxDecoration(
-          color: Colors.teal,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        indicatorPadding: const EdgeInsets.all(4),
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.grey.shade600,
-        labelStyle: const TextStyle(fontWeight: FontWeight.w600),
-        tabs: const [
-          Tab(text: 'All'),
-          Tab(text: 'Pending'),
-          Tab(text: 'Active'),
-          Tab(text: 'Done'),
-        ],
-      ),
-    );
-  }
+  // Widget _buildTabBar() {
+  //   return Container(
+  //     margin: const EdgeInsets.symmetric(horizontal: 16),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey.shade100,
+  //       borderRadius: BorderRadius.circular(12),
+  //     ),
+  //     child: TabBar(
+  //       controller: _tabController,
+  //       indicator: BoxDecoration(
+  //         color: Colors.teal,
+  //         borderRadius: BorderRadius.circular(10),
+  //       ),
+  //       indicatorPadding: const EdgeInsets.all(4),
+  //       labelColor: Colors.white,
+  //       unselectedLabelColor: Colors.grey.shade600,
+  //       labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+  //       tabs: const [
+  //         Tab(text: 'All'),
+  //         Tab(text: 'Pending'),
+  //         Tab(text: 'Active'),
+  //         Tab(text: 'Done'),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildTaskCard(TaskModel task) {
     final statusColor = _getStatusColor(task.status);
-    final isOverdue = task.status != 'completed' && 
-        task.due_date.isBefore(DateTime.now());
-    
+    final isOverdue =
+        task.status != 'completed' && task.due_date.isBefore(DateTime.now());
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: isOverdue 
+        border: isOverdue
             ? Border.all(color: Colors.red.shade200, width: 1.5)
             : null,
         boxShadow: [
@@ -409,7 +414,9 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
-                        color: isOverdue ? Colors.red.shade600 : Colors.grey.shade600,
+                        color: isOverdue
+                            ? Colors.red.shade600
+                            : Colors.grey.shade600,
                       ),
                     ),
                   ],
@@ -463,10 +470,7 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
             const SizedBox(height: 8),
             Text(
               'Tasks you assign will appear here',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -492,6 +496,7 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
+
       body: SafeArea(
         child: Column(
           children: [
@@ -537,8 +542,9 @@ class _ViewAssignedTasksScreenState extends ConsumerState<ViewAssignedTasksScree
               data: (tasks) => Expanded(
                 child: Column(
                   children: [
-                    _buildStatsCard(tasks),
-                    _buildTabBar(),
+                    // _buildStatsCard(tasks),
+                    // _buildTabBar(),
+                    Text("Assigned Task"),
                     const SizedBox(height: 16),
                     Expanded(
                       child: TabBarView(
@@ -569,8 +575,8 @@ class _TaskDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isOverdue = task.status != 'completed' && 
-        task.due_date.isBefore(DateTime.now());
+    final isOverdue =
+        task.status != 'completed' && task.due_date.isBefore(DateTime.now());
     final statusColor = _getStatusColor(task.status);
 
     return DraggableScrollableSheet(
@@ -693,10 +699,7 @@ class _TaskDetailsSheet extends StatelessWidget {
                         ),
                         child: Text(
                           task.description,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            height: 1.5,
-                          ),
+                          style: const TextStyle(fontSize: 14, height: 1.5),
                         ),
                       ),
                     ],

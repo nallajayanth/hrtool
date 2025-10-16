@@ -6,13 +6,13 @@ import 'package:hr_tool/riverpod/user_details/provider/user_provider.dart';
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
-  // Helper method to determine if this is accessed from manager bottom nav
+  
   bool _isManagerBottomNav(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     return location == '/manager-profile';
   }
 
-  // Helper method to determine if user can navigate back
+
   bool _canGoBack(BuildContext context) {
     return Navigator.of(context).canPop() && !_isManagerBottomNav(context);
   }
@@ -50,9 +50,9 @@ class ProfileScreen extends ConsumerWidget {
             title: const Text("Profile"),
             centerTitle: true,
             backgroundColor: Colors.indigo,
-            // Only show back button if not accessed from manager bottom nav
+       
             automaticallyImplyLeading: canGoBack,
-            // Add leading widget for manager bottom nav if needed
+           
             leading: isManagerBottomNav
                 ? null
                 : canGoBack

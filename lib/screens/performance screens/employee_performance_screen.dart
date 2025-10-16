@@ -1,4 +1,4 @@
-// employee_performance_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hr_tool/riverpod/performance/provider/performance_provider.dart';
@@ -132,7 +132,8 @@ class _EmployeePerformanceScreenState
                   vertical: 14,
                 ),
               ),
-              onChanged: (value) => setState(() => _searchQuery = value.trim()),
+              onChanged: (value) => setState(() => _searchQuery
+               = value.trim()),
             ),
           ),
         ],
