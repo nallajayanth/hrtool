@@ -6,6 +6,10 @@ import 'package:hr_tool/riverpod/task/model/task_model.dart';
 import 'package:hr_tool/riverpod/task/service/task_service.dart';
 import 'package:hr_tool/riverpod/task/provider/task_provider.dart';
 
+import 'package:hr_tool/riverpod/ai/provider/ai_task_provider.dart';
+// Ensure this import exists or add it if missing
+import 'package:hr_tool/riverpod/task/model/task_model.dart';
+
 class EmployeeTasksScreen extends ConsumerStatefulWidget {
   const EmployeeTasksScreen({super.key});
 
@@ -99,6 +103,143 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
       default:
         return Icons.schedule_outlined;
     }
+  }
+
+  void _showAIPlanDialog(
+    List<Map<String, String>> plan,
+    List<TaskModel> allTasks,
+  ) {
+    print('UI: Showing AI Plan Dialog with ${plan.length} items');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        height:
+            MediaQuery.of(context).size.height * 0.6, // Take up 60% of screen
+        padding: const EdgeInsets.all(24.0),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.purple.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.auto_awesome,
+                    color: Colors.purple.shade400,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  "AI Daily Plan",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Here are the top tasks you should focus on today:",
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: ListView(
+                children: plan.map((item) {
+                  // Find the full task object using the ID
+                  final task = allTasks.firstWhere(
+                    (t) => t.id == item['task_id'],
+                    orElse: () => TaskModel(
+                      id: '0',
+                      title: 'Unknown Task',
+                      description: '',
+                      employee_id: '',
+                      manager_id: '',
+                      employee_name: '',
+                      manager_name: '',
+                      status: '',
+                      due_date: DateTime.now(),
+                    ),
+                  );
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.purple.shade100),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.purple.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                task.title == 'Unknown Task'
+                                    ? 'Task ID: ${item['task_id']}'
+                                    : task.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.purple.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                "PRIORITY",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          item['reason'] ?? '',
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _updateStatus(String taskId, String newStatus) async {
@@ -206,7 +347,7 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
                   'Mark In-Progress',
                   Icons.autorenew_outlined,
                   const Color(0xFFFF8C00),
-                ), 
+                ),
                 _buildStatusOption(
                   ctx,
                   'completed',
@@ -834,6 +975,79 @@ class _EmployeeTasksScreenState extends ConsumerState<EmployeeTasksScreen>
         elevation: 0,
         centerTitle: true,
         actions: [
+          // --- NEW AI BUTTON ---
+          IconButton(
+            icon: const Icon(Icons.auto_awesome, color: Colors.amberAccent),
+            tooltip: 'Plan my day',
+            onPressed: () async {
+              // 1. Get current tasks from the existing provider
+              final tasks = ref.read(employeeTaskProviderProvider).valueOrNull;
+
+              if (tasks != null && tasks.isNotEmpty) {
+                // 2. Show a loading snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Text('AI is analyzing your schedule...'),
+                      ],
+                    ),
+                    backgroundColor: Colors.indigo.shade800,
+                    duration: const Duration(
+                      seconds: 1,
+                    ), // Short duration as the dialog will open soon
+                  ),
+                );
+
+                // 3. Call the AI Provider
+                print('UI: Calling generatePlan...');
+                await ref
+                    .read(aiTaskPriorityProvider.notifier)
+                    .generatePlan(tasks);
+                print('UI: generatePlan completed.');
+
+                // 4. Get the result
+                final plan = ref.read(aiTaskPriorityProvider).valueOrNull;
+                print('UI: Plan retrieved: $plan');
+
+                // 5. Show the dialog if we have a plan
+                if (plan != null && plan.isNotEmpty && mounted) {
+                  _showAIPlanDialog(plan, tasks);
+                } else if (mounted) {
+                  final error = ref.read(aiTaskPriorityProvider).error;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        error != null
+                            ? 'AI Error: $error'
+                            : 'AI could not generate a plan. No active tasks or service unavailable.',
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              } else {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No tasks available to analyze!'),
+                    ),
+                  );
+                }
+              }
+            },
+          ),
+
+          // --- END AI BUTTON ---
           IconButton(
             icon: const Icon(Icons.refresh_outlined, color: Colors.white),
             onPressed: _refresh,

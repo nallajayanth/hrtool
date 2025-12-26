@@ -341,7 +341,6 @@ class _EmployeeHomeScreenState extends ConsumerState<EmployeeHomeScreen> {
                   child: _buildStatCard(
                     icon: Icons.beach_access,
                     title: "Apply Leave",
-
                     color: Colors.teal,
                     onTap: () => context.push("/employee-leave"),
                   ),
@@ -351,7 +350,6 @@ class _EmployeeHomeScreenState extends ConsumerState<EmployeeHomeScreen> {
                   child: _buildStatCard(
                     icon: Icons.group_rounded,
                     title: "Team Members",
-
                     color: Colors.blue,
                     onTap: () => context.push("/employees-team-members"),
                   ),
